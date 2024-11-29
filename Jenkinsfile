@@ -14,11 +14,19 @@ pipeline{
                 }
             }
         }
+        stage('Clean') {
+            steps {
+                script {
+                    sh 'rm -rf node_modules'
+                    sh 'rm -rf package-lock.json'
+                }
+            }
+        }
         stage('Install Dependencies') {
             steps {
                 script {
                     sh '''
-                    docker run --rm -v $PWD:/app -w /app node:18-alpine sh -c "npm install --legacy-peer-deps"
+                    docker run --rm -v $PWD:/app -w /app node:18-alpine sh -c "npm ci --legacy-peer-deps"
                     '''
                 }
             }
