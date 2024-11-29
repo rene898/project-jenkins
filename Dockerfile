@@ -6,7 +6,7 @@ WORKDIR /app
 # Actualizar NPM y limpiar caché
 RUN npm install -g npm@latest
 COPY package*.json ./
-RUN rm -rf node_modules && npm cache clean --force
+RUN sudo rm -rf node_modules && npm cache clean --force
 RUN npm install --legacy-peer-deps
 
 # Copiar código y construir la aplicación
