@@ -4,6 +4,9 @@ FROM node:18-alpine AS build
 #create a directory 
 WORKDIR /app
 
+# Elimina el node_modules antes de instalar 
+RUN rm -rf node_modules
+
 #Install dependencies
 COPY package*.json ./
 RUN npm install --legacy-peer-deps
