@@ -14,11 +14,11 @@ pipeline{
                 }
             }
         }
-        //modificarlo para limpiar el cache
-        stage('Clean Cache') {
+        stage('Clean') {
             steps {
                 script {
-                    sh 'npm cache clean --force'
+                    sh 'rm -rf node_modules'
+                    sh 'rm -rf package-lock.json'
                 }
             }
         }
@@ -26,7 +26,7 @@ pipeline{
             steps {
                 script {
                     sh '''
-                    docker run --rm -v $PWD:/app -w /app node:18-alpine sh -c "npm ci --legacy-peer-deps"
+                    docker run --rm -v $PWD:/app -w /app node:18-alpine sh -c "npm install -g npm@latest --legacy-peer-deps"
                     '''
                 }
             }
