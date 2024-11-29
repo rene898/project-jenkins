@@ -1,21 +1,21 @@
-# Build phase
+# Use a lightweight Node image to build the app 
 FROM node:18-alpine AS build
 
+#create a directory 
 WORKDIR /app
 
-# Actualizar NPM y limpiar caché
-RUN npm install -g npm@latest
+#Install dependencies
 COPY package*.json ./
-RUN rm -rf node_modules && npm cache clean --force
 RUN npm install --legacy-peer-deps
 
-# Copiar código y construir la aplicación
+#Copy and build the app
 COPY . .
 RUN npm run build
 
-# Run phase
+# Use an Nginx image to serve the app
 FROM nginx:alpine
 COPY --from=build /app/build /usr/share/nginx/html
 EXPOSE 80
 
+# Set the default command to run Jenkins
 CMD ["nginx", "-g", "daemon off;"]
