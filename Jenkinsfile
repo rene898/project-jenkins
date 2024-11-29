@@ -14,11 +14,11 @@ pipeline{
                 }
             }
         }
-        stage('Clean') {
+        //modificarlo para limpiar el cache
+        stage('Clean Cache') {
             steps {
                 script {
-                    sh 'rm -rf node_modules'
-                    sh 'rm -rf package-lock.json'
+                    sh 'npm cache clean --force'
                 }
             }
         }
