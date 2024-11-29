@@ -5,7 +5,7 @@ FROM node:18-alpine AS build
 WORKDIR /app
 
 # Elimina el node_modules antes de instalar 
-RUN rm -rf node_modules
+RUN npx rimraf node_modules
 
 #Install dependencies
 COPY package*.json ./
