@@ -1,5 +1,5 @@
 # Use a lightweight Node image to build the app 
-FROM node:18-alpine AS build
+FROM node:18-alpine
 
 #create a directory 
 WORKDIR /app
@@ -18,4 +18,4 @@ COPY --from=build /app/build /usr/share/nginx/html
 EXPOSE 80
 
 # Set the default command to run Jenkins
-CMD ["npm", "start"]
+CMD ["nginx", "-g", "daemon off;"]
