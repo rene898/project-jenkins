@@ -1,24 +1,29 @@
-# Use a lightweight Node image to build the app 
-FROM node:18-alpine
+# Step 1: Build the React application
+FROM node:18 AS build
 
-#create a directory 
+# Set the working directory in the container
 WORKDIR /app
 
-#Install dependencies
+# Copy the package.json and package-lock.json (or yarn.lock)
 COPY package*.json ./
 
-RUN npm install -g npm@8.11.0
+# Install dependencies
+RUN npm install
 
-RUN npm install --legacy-peer-deps
-
-#Copy and build the app
+# Copy the rest of the application files
 COPY . .
+
+# Build the React application
 RUN npm run build
 
-# Use an Nginx image to serve the app
+# Step 2: Serve the React application
 FROM nginx:alpine
+
+# Copy the build artifacts from the previous stage
 COPY --from=build /app/build /usr/share/nginx/html
+
+# Expose port 80 to the outside world
 EXPOSE 80
 
-# Set the default command to run Jenkins
+# Start the Nginx server
 CMD ["nginx", "-g", "daemon off;"]
