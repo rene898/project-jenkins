@@ -1,5 +1,5 @@
 # Step 1: Build the React application
-FROM node:20-alpine AS build
+FROM node:18-alpine AS build
 
 # Set the working directory in the container
 WORKDIR /app
@@ -8,7 +8,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm ci
+RUN npm install --legacy-peer-deps
 
 # Copy the rest of the application files
 COPY . .
