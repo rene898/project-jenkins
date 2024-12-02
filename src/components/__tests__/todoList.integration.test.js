@@ -1,6 +1,5 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import "@testing-library/jest-dom/extend-expect";
 import Todo from "../todo";
 
 // Componente TodoList que renderiza múltiples Todo
