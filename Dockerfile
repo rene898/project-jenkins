@@ -1,5 +1,5 @@
 # Use a lightweight Node image to build the app
-FROM node:20-slim AS build
+FROM node:18-alpine AS build
 
 # Create app directory
 WORKDIR /app
