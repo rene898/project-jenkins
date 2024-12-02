@@ -21,7 +21,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          docker run --rm -v ${{ github.workspace }}:/app -w /app node:18-alpine sh -c "npm install"
+          npm install --legacy-peer-deps
 
   run-unit-tests:
     runs-on: ubuntu-latest
@@ -32,7 +32,7 @@ jobs:
 
       - name: Run Unit Tests
         run: |
-          docker run --rm -v ${{ github.workspace }}:/app -w /app node:18-alpine sh -c "npm test"
+          npm test
 
   run-integration-tests:
     runs-on: ubuntu-latest
@@ -43,7 +43,7 @@ jobs:
 
       - name: Run Integration Tests
         run: |
-          docker run --rm -v ${{ github.workspace }}:/app -w /app node:18-alpine sh -c "npm test"
+          npm test
 
   build-docker-image:
     runs-on: ubuntu-latest
