@@ -1,0 +1,75 @@
+name: CI/CD Pipeline for React App
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  checkout:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+  install-dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Install Dependencies
+        run: |
+          npm install --legacy-peer-deps
+
+  run-unit-tests:
+    runs-on: ubuntu-latest
+    needs: install-dependencies
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Run Unit Tests
+        run: |
+          npm run test
+
+  run-integration-tests:
+    runs-on: ubuntu-latest
+    needs: run-unit-tests
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Run Integration Tests
+        run: |
+          npm run test
+
+  build-docker-image:
+    runs-on: ubuntu-latest
+    needs: run-integration-tests
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build the Docker image
+      run: | 
+        docker build -t my-react-app . 
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build-docker-image
+    steps:
+      - name: Deploy to AWS EC2
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_USER: ${{ secrets.EC2_USER }}
+          EC2_PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
+        run: |
+          echo "${{ secrets.EC2_PRIVATE_KEY }}" > ec2-key.pem
+          chmod 600 ec2-key.pem
+          ssh -o StrictHostKeyChecking=no -i ec2-key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << EOF
+            docker stop react-app || true
+            docker rm react-app || true
+            docker pull my-react-app
+            docker run -d --name react-app -p 80:80 my-react-app
+            docker ps -a
+            docker logs react-app || true
+          EOF
