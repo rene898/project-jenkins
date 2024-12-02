@@ -21,7 +21,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          docker run --rm -v ${{ github.workspace }}:/app -w /app node:18-alpine sh -c "npm install --legacy-peer-deps"
+          docker run --rm -v ${{ github.workspace }}:/app -w /app node:18-alpine sh -c "npm install"
 
   run-unit-tests:
     runs-on: ubuntu-latest
