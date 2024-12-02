@@ -1,29 +1,20 @@
-# Step 1: Build the React application
+# Use a lightweight Node image to build the app
 FROM node:18-alpine AS build
 
-# Set the working directory in the container
+# Create app directory
 WORKDIR /app
 
-# Copy the package.json and package-lock.json (or yarn.lock)
-COPY package*.json ./
-
 # Install dependencies
-RUN npm cache clean --force && npm install -g npm@8.11.0 --legacy-peer-deps
+COPY package*.json ./
+RUN npm install --legacy-peer-deps
 
-# Copy the rest of the application files
+# Copy and build the application
 COPY . .
-
-# Build the React application
 RUN npm run build
 
-# Step 2: Serve the React application
+# Use an Nginx image to serve the app
 FROM nginx:alpine
-
-# Copy the build artifacts from the previous stage
 COPY --from=build /app/build /usr/share/nginx/html
-
-# Expose port 80 to the outside world
 EXPOSE 80
 
-# Start the Nginx server
 CMD ["nginx", "-g", "daemon off;"]
